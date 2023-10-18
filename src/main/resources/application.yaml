@@ -1,5 +1,5 @@
 server:
-  port: 9090
+  port: 8080
 spring:
   application:
     name: human-resources-management
@@ -11,7 +11,7 @@ spring:
     driver-class-name: org.postgresql.Driver
     username: ukiqvpvm
     password: 1TFfGCEL4j0hhJVeZZJ0taJ6V3cneR60
-    url: jdbc:postgresql://ukiqvpvm:1TFfGCEL4j0hhJVeZZJ0taJ6V3cneR60@bubble.db.elephantsql.com/ukiqvpvm
+    url: jdbc:postgresql://bubble.db.elephantsql.com/ukiqvpvm
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     generate-ddl: true
