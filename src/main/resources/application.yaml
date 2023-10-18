@@ -1,0 +1,56 @@
+server:
+  port: 9090
+spring:
+  application:
+    name: human-resources-management
+  sleuth:
+    enabled: true
+  jackson:
+    default-property-inclusion: always
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    username: postgres
+    password: 123456
+    url: jdbc:postgresql://127.0.0.1:5432/human_resources_management
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    generate-ddl: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        jdbc:
+          lob:
+            non_contextual_creation: true
+    open-in-view: false
+  cache:
+    redis:
+      key-prefix: human-resources-management
+      time-to-live: 3600
+      use-key-prefix: true
+
+management:
+  tracing:
+    propagation:
+      type: b3
+    sampling:
+      probability: 1.0
+
+keycloak:
+  realm: hrm
+  auth-server-url: http://localhost:8080
+  resource: hrm
+  ssl-required: none
+  principal-attribute: preferred_username
+  use-resource-role-mappings: true
+  bearer-only: true
+  cors: true
+  credentials:
+    secret: fxhiCGYYzAINZgO7e9G9pYqMWYMKqIEL
+  public-client: true
+
+redis:
+  port: ${REDIS_PORT:6379}
+  host: ${REDIS_HOST:127.0.0.1}
+  database: ${REDIS_DATABASE:0}
+  timeout: ${REDIS_TIMEOUT:3600}

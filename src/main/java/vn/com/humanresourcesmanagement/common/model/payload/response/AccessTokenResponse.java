@@ -1,0 +1,58 @@
+package vn.com.humanresourcesmanagement.common.model.payload.response;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.keycloak.representations.idm.RoleRepresentation;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class AccessTokenResponse {
+
+    @JsonProperty("accessToken")
+    private String accessToken;
+
+    @JsonProperty("expiresIn")
+    private long expiresIn;
+
+    @JsonProperty("refreshExpiresIn")
+    private long refreshExpiresIn;
+
+    @JsonProperty("refreshToken")
+    private String refreshToken;
+
+    @JsonProperty("tokenType")
+    private String tokenType;
+
+    @JsonProperty("idToken")
+    private String idToken;
+
+    @JsonProperty("sessionId")
+    private String sessionId;
+
+    @JsonProperty("scope")
+    private String scope;
+
+    @JsonProperty("error")
+    private String error;
+
+    @JsonProperty("errorDescription")
+    private String errorDescription;
+
+    @JsonProperty("errorUri")
+    private String errorUri;
+
+    @JsonProperty("roles")
+    private List<String> roles;
+
+}
