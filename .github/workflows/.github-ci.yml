@@ -22,7 +22,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3.5.1
         with:
-          repository: vanhopld98/authentication-service
+          repository: vanhopld98/hrm
 
       - name: Setup JDK 11
         uses: actions/setup-java@v3.5.1
