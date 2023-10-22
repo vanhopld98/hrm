@@ -11,7 +11,7 @@ on:
 env:
   PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
   TF_STATE_BUCKET_NAME: ${{ secrets.GCP_TF_STATE_BUCKET }}
-  IMAGE_NAME: hrm
+#  IMAGE_NAME: hrm
   CLUSTER_NAME: hrm-cluster
   GAR_LOCATION: us-central1
   APP: app
@@ -19,6 +19,13 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
+
+  env:
+    IMAGE_NAME: ${{ github.sha }}
+
+  permissions:
+    contents: 'read'
+    id-token: 'write'
 
     steps:
       - name: Checkout code
