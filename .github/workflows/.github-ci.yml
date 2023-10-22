@@ -60,16 +60,12 @@ jobs:
       - name: Show Docker Image
         run: docker images
 
-#      - name: 'Google auth'
-#        id: 'auth'
-#        uses: 'google-github-actions/auth@v1'
-#        with:
-#          workload_identity_provider: '${{ secrets.WIF_PROVIDER }}'
-#          service_account: '${{ secrets.WIF_SERVICE_ACCOUNT }}'
-
-      - name: 'Docker auth'
-        run: |-
-          gcloud auth configure-docker ${{ env.GAR_LOCATION }}-docker.pkg.dev
+      - name: 'Google auth'
+        id: 'auth'
+        uses: 'google-github-actions/auth@v1'
+        with:
+          workload_identity_provider: 'projects/hrm-management-2023/locations/global/workloadIdentityPools/k8s-pool/providers/k8s-provider'
+          service_account: 'your-service-account@hrm-management-2023.iam.gserviceaccount.com'
 
       - name: 'Set up Cloud SDK'
         uses: 'google-github-actions/setup-gcloud@v1'
