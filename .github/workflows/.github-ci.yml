@@ -9,7 +9,8 @@ on:
       - master
 
 env:
-  PROJECT_ID: hrm-management-2023
+  PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+  TF_STATE_BUCKET_NAME: ${{ secrets.GCP_TF_STATE_BUCKET }}
   IMAGE_NAME: hrm
   CLUSTER_NAME: hrm-cluster
   GAR_LOCATION: us-central1
@@ -64,8 +65,9 @@ jobs:
         id: 'auth'
         uses: 'google-github-actions/auth@v1'
         with:
-          workload_identity_provider: 'projects/hrm-management-2023/locations/global/workloadIdentityPools/k8s-pool/providers/k8s-provider'
-          service_account: 'hrm-service-account@hr-management-2023.iam.gserviceaccount.com'
+          token_format: 'access_token'
+          workload_identity_provider: 'projects/222979658985/locations/global/workloadIdentityPools/k8s-pool/providers/k8s-provider'
+          service_account: 'hrm-service-account@$GCP_PROJECT_ID.iam.gserviceaccount.com'
 
       - name: 'Set up Cloud SDK'
         uses: 'google-github-actions/setup-gcloud@v1'
