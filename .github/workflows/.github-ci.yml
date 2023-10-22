@@ -74,7 +74,7 @@ jobs:
         with:
           token_format: 'access_token'
           workload_identity_provider: 'projects/222979658985/locations/global/workloadIdentityPools/k8s-pool/providers/k8s-provider'
-          service_account: 'hrm-service-account@$GCP_PROJECT_ID.iam.gserviceaccount.com'
+          service_account: 'hrm-service-account@${{ secrets.GCP_PROJECT_ID }}.iam.gserviceaccount.com'
 
       - name: 'Set up Cloud SDK'
         uses: 'google-github-actions/setup-gcloud@v1'
