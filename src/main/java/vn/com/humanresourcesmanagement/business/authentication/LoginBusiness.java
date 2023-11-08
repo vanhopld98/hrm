@@ -12,6 +12,7 @@ import vn.com.humanresourcesmanagement.common.model.payload.response.AccessToken
 import vn.com.humanresourcesmanagement.common.model.payload.response.RolesUserResponse;
 import vn.com.humanresourcesmanagement.common.redis.TokenService;
 import vn.com.humanresourcesmanagement.common.utils.JWTUtils;
+import vn.com.humanresourcesmanagement.common.utils.PasswordUtils;
 import vn.com.humanresourcesmanagement.common.utils.StringUtils;
 import vn.com.humanresourcesmanagement.configuration.properties.KeycloakProperties;
 import vn.com.humanresourcesmanagement.service.UserProfileService;
@@ -45,6 +46,11 @@ public class LoginBusiness {
 
         if (Objects.isNull(userProfile)) {
             throw new BusinessException("Username không tồn tại");
+        }
+
+        /* So sánh 2 password xem có trùng nhau hay không */
+        if (StringUtils.notEquals(userProfile.getPassword(), PasswordUtils.encryptMD5(request.getPassword()))) {
+            throw new BusinessException("Sai tên tài khoản hoặc mật khẩu. Vui lòng thử lại.");
         }
 
         /* Logout tài khoản hiện tại */

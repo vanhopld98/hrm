@@ -14,7 +14,7 @@ import vn.com.humanresourcesmanagement.common.redis.TokenService;
 import vn.com.humanresourcesmanagement.common.utils.JWTUtils;
 import vn.com.humanresourcesmanagement.common.utils.StringUtils;
 
-import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 
 @Aspect
@@ -47,13 +47,10 @@ public class SecuredAspect {
                 checkEqualsToken(tokenRedis, tokenHeaders);
             } else {
                 /* Trường hợp có phân quyền role chỉ định thì cần xem user có đúng quyền hay không */
-                for (String role : rolesCurrent) {
-                    if (roles.contains(role)) {
-                        checkEqualsToken(tokenRedis, tokenHeaders);
-                        break;
-                    } else {
-                        throw new AuthenticationException("Bạn không có quyền truy cập vào chức năng này", 403);
-                    }
+                if (new HashSet<>(rolesCurrent).containsAll(roles)) {
+                    checkEqualsToken(tokenRedis, tokenHeaders);
+                } else {
+                    throw new AuthenticationException("Bạn không có quyền truy cập vào chức năng này", 403);
                 }
             }
         } catch (Exception e) {

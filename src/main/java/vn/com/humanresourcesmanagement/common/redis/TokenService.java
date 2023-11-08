@@ -24,7 +24,7 @@ public class TokenService extends RedisService {
     @Override
     public void set(String key, String token, Date expiredDate) {
         long diff = expiredDate.getTime() - new Date().getTime();
-        redisTemplate.opsForValue().set(key.toLowerCase() + SUB_FIX, token, diff, TimeUnit.MILLISECONDS);
+        redisTemplate.opsForValue().set(key.toLowerCase() + SUB_FIX, token, diff, TimeUnit.SECONDS);
     }
 
     public void remove(String key) {

@@ -3,7 +3,6 @@ package vn.com.humanresourcesmanagement.business.authentication;
 import lombok.RequiredArgsConstructor;
 import org.keycloak.adapters.springboot.KeycloakSpringBootProperties;
 import org.keycloak.admin.client.CreatedResponseUtil;
-import org.keycloak.admin.client.resource.RealmResource;
 import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.slf4j.Logger;
@@ -18,11 +17,9 @@ import vn.com.humanresourcesmanagement.common.model.payload.response.AccessToken
 import vn.com.humanresourcesmanagement.common.utils.PasswordUtils;
 import vn.com.humanresourcesmanagement.configuration.properties.KeycloakProperties;
 import vn.com.humanresourcesmanagement.data.entity.UserProfile;
-import vn.com.humanresourcesmanagement.data.repository.UserProfileOTPRepository;
 import vn.com.humanresourcesmanagement.data.repository.UserProfileRepository;
 import vn.com.humanresourcesmanagement.service.UserProfileService;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -33,9 +30,9 @@ public class RegisterBusiness {
     private static final Logger LOGGER = LoggerFactory.getLogger(RegisterBusiness.class);
 
     private static final int TOTAL_FALSE_OTP = 5;
+    public static final String ROLE_USER = "ROLE_USER";
 
     private final UserProfileService userProfileService;
-    private final UserProfileOTPRepository userProfileOTPRepository;
     private final KeycloakProperties keycloakProperties;
     private final KeycloakSpringBootProperties keycloakSpringBootProperties;
     private final UserProfileRepository userProfileRepository;
@@ -50,33 +47,6 @@ public class RegisterBusiness {
         if (Objects.nonNull(userProfile)) {
             throw new BusinessException(Constant.USERNAME_EXISTS);
         }
-
-        /* Kiểm tra xem có đúng là người nhận được otp tạo tài khoản hay không. */
-//        var userProfileOTP = userProfileOTPRepository.getLatestOTP(username, OTPTypeEnum.REGISTER.name());
-//        LOGGER.info("[AUTHENTICATION][{}][REGISTER][USER_PROFILE_OTP][{}]", username, userProfileOTP);
-
-//        if (Objects.isNull(userProfileOTP)) {
-//            throw new BusinessException(Constant.OTP_EXPIRED_OR_INVALID_MES);
-//        }
-//
-//        if (Objects.isNull(userProfileOTP.getLastVerifyAt())) {
-//            throw new BusinessException(Constant.OTP_VERIFY_NULL);
-//        }
-//
-//        int countVerifyFail = Objects.isNull(userProfileOTP.getCountVerifyFalse()) ? 0 : userProfileOTP.getCountVerifyFalse();
-//        LOGGER.info("[AUTHENTICATION][{}][REGISTER][COUNT_VERIFY_FAIL][{}]", username, countVerifyFail);
-//
-//        if (Boolean.FALSE.equals(userProfileOTP.getStatus()) && countVerifyFail >= TOTAL_FALSE_OTP) {
-//            throw new BusinessException(Constant.VERIFY_OTP_5TH);
-//        }
-//
-//        /* Kiểm tra xem có trùng otp hay không */
-//        if (StringUtils.notEquals(userProfileOTP.getOtp(), request.getOtp())) {
-//            userProfileOTP.setCountVerifyFalse(countVerifyFail + 1);
-//            userProfileOTP.setLastVerifyAt(LocalDateTime.now());
-//            userProfileOTPRepository.save(userProfileOTP);
-//            throw new BusinessException(Constant.OTP_EXPIRED_OR_INVALID_MES);
-//        }
 
         var userRepresentation = new UserRepresentation();
         userRepresentation.setEnabled(true);
@@ -124,12 +94,10 @@ public class RegisterBusiness {
                 /* Set password của user vào keycloak */
                 userResource.resetPassword(keycloakProperties.credentialRepresentation(request.getPassword()));
 
-                String userRole = "ROLE_USER";
-
                 List<RoleRepresentation> roleRepresentationList = userResource.roles().realmLevel().listAvailable();
 
                 for (RoleRepresentation roleRepresentation : roleRepresentationList) {
-                    if (roleRepresentation.getName().equals(userRole)) {
+                    if (roleRepresentation.getName().equals(ROLE_USER)) {
                         userResource.roles().realmLevel().add(List.of(roleRepresentation));
                         break;
                     }
@@ -142,9 +110,6 @@ public class RegisterBusiness {
                 throw new BusinessException(Constant.USERNAME_EXISTS);
             }
         }
-
-        /* Inactive toàn bộ OTP của user */
-        userProfileOTPRepository.inactiveAllStatus(username, OTPTypeEnum.REGISTER.name());
 
         /* Thực hiện login để trả ra token mới nhất của user */
         return loginBusiness.login(LoginRequest
