@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import vn.com.humanresourcesmanagement.common.exception.AuthenticationException;
 import vn.com.humanresourcesmanagement.common.exception.BusinessException;
 import vn.com.humanresourcesmanagement.common.mapper.AuthenticationMapper;
 import vn.com.humanresourcesmanagement.common.model.payload.request.LoginRequest;
@@ -48,6 +49,10 @@ public class LoginBusiness {
             throw new BusinessException("Username không tồn tại");
         }
 
+        if (Boolean.FALSE.equals(userProfile.getIsActive())) {
+            throw new BusinessException("Tài khoản của bạn đã bị khoá. Vui lòng liên hệ quản trị viên để được hỗ trợ");
+        }
+
         /* So sánh 2 password xem có trùng nhau hay không */
         if (StringUtils.notEquals(userProfile.getPassword(), PasswordUtils.encryptMD5(request.getPassword()))) {
             throw new BusinessException("Sai tên tài khoản hoặc mật khẩu. Vui lòng thử lại.");
@@ -62,6 +67,11 @@ public class LoginBusiness {
 
         var jwtDecode = JWT.decode(accessTokenKeycloak.getToken());
         var roles = jwtDecode.getClaim("realm_access").as(RolesUserResponse.class).getRoles().stream().filter(role -> role.startsWith("ROLE")).collect(Collectors.toList());
+        LOGGER.info("[AUTHENTICATION][{}][LOGIN] Roles: {}", username, roles);
+
+        if (roles.isEmpty()) {
+            throw new AuthenticationException("Bạn không có quyền truy cập chức năng này. Vui lòng đăng nhập lại", 403);
+        }
 
         LOGGER.info("[AUTHENTICATION][{}][LOGIN] Login Success", username);
 

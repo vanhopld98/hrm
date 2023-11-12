@@ -9,7 +9,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import vn.com.humanresourcesmanagement.common.constants.Constant;
-import vn.com.humanresourcesmanagement.common.enums.OTPTypeEnum;
 import vn.com.humanresourcesmanagement.common.exception.BusinessException;
 import vn.com.humanresourcesmanagement.common.model.payload.request.LoginRequest;
 import vn.com.humanresourcesmanagement.common.model.payload.request.RegisterRequest;
@@ -56,9 +55,6 @@ public class RegisterBusiness {
         userRepresentation.setEmail(request.getEmail());
         userRepresentation.setEmailVerified(true);
         LOGGER.info("[AUTHENTICATION][{}][REGISTER][USER_REPRESENTATION][{}]", username, userRepresentation);
-
-        var role = new RoleRepresentation();
-        role.setId("9feab2bf-96e7-4a35-a0a4-5e4d2cc56d84");
 
         /* Lấy keycloak */
         var keycloakInstance = keycloakProperties.getKeycloakByClient();

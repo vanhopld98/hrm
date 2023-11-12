@@ -47,7 +47,7 @@ public class SecuredAspect {
                 checkEqualsToken(tokenRedis, tokenHeaders);
             } else {
                 /* Trường hợp có phân quyền role chỉ định thì cần xem user có đúng quyền hay không */
-                if (new HashSet<>(rolesCurrent).containsAll(roles)) {
+                if (checkRoles(rolesCurrent, roles)) {
                     checkEqualsToken(tokenRedis, tokenHeaders);
                 } else {
                     throw new AuthenticationException("Bạn không có quyền truy cập vào chức năng này", 403);
@@ -60,6 +60,13 @@ public class SecuredAspect {
             LOGGER.error("Unauthorized. {}", e.getMessage());
             throw new AuthenticationException();
         }
+    }
+
+    private boolean checkRoles(List<String> rolesCurrent, List<String> roles) {
+        for (String role : roles) {
+            return rolesCurrent.contains(role);
+        }
+        return false;
     }
 
     private static void checkEqualsToken(String token, String tokenCurrent) {
