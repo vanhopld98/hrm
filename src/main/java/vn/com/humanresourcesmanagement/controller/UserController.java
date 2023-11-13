@@ -18,8 +18,6 @@ import vn.com.humanresourcesmanagement.common.model.payload.response.Timekeeping
 import vn.com.humanresourcesmanagement.common.model.payload.response.TimekeepingHistoryResponse;
 import vn.com.humanresourcesmanagement.common.model.payload.response.UserProfileResponse;
 
-import java.util.List;
-
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/user/v1")
@@ -31,30 +29,45 @@ public class UserController {
     private final TimekeepingHistoryBusiness timekeepingHistoryBusiness;
     private final TimekeepingHistoriesBusiness timekeepingHistoriesBusiness;
 
+    /**
+     * API chấm công vào (checkin)
+     */
     @Secured(roles = RoleEnum.USER)
     @PostMapping("/timekeeping/checkin")
     public void checkin() {
         checkinBusiness.execute();
     }
 
+    /**
+     * API chấm công ra (checkout)
+     */
     @Secured(roles = RoleEnum.USER)
     @PostMapping("/timekeeping/checkout")
     public void checkout() {
         checkoutBusiness.execute();
     }
 
+    /**
+     * API lấy ra thông tin user
+     */
     @Secured(roles = RoleEnum.ALL)
     @GetMapping("/my-profile")
     public ResponseEntity<UserProfileResponse> myProfile() {
         return ResponseEntity.ok(userProfileBusiness.execute());
     }
 
+    /**
+     * API lấy ra thông tin chấm công của ngày hiện tại
+     */
     @Secured(roles = RoleEnum.USER)
     @GetMapping("/timekeeping/history")
     public ResponseEntity<TimekeepingHistoryResponse> getHistoryTimekeeping() {
         return ResponseEntity.ok(timekeepingHistoryBusiness.execute());
     }
 
+    /**
+     * API lấy ra danh sách tất cả các thông tin chấm công của người dùng đó
+     */
     @Secured(roles = RoleEnum.USER)
     @GetMapping("/timekeeping/histories")
     public ResponseEntity<TimekeepingHistoriesResponse> getHistoriesTimekeeping(@RequestParam("page") int page,

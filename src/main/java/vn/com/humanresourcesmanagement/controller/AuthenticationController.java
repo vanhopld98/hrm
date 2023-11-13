@@ -8,9 +8,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import vn.com.humanresourcesmanagement.aop.Secured;
 import vn.com.humanresourcesmanagement.business.authentication.LoginBusiness;
 import vn.com.humanresourcesmanagement.business.authentication.LogoutBusiness;
 import vn.com.humanresourcesmanagement.business.authentication.RegisterBusiness;
+import vn.com.humanresourcesmanagement.common.enums.RoleEnum;
 import vn.com.humanresourcesmanagement.common.model.payload.request.LoginRequest;
 import vn.com.humanresourcesmanagement.common.model.payload.request.LogoutRequest;
 import vn.com.humanresourcesmanagement.common.model.payload.request.RegisterRequest;
@@ -27,18 +29,28 @@ public class AuthenticationController {
     private final RegisterBusiness registerBusiness;
     private final LogoutBusiness logoutBusiness;
 
+    /**
+     * API đăng ký thông tin người dùng
+     */
+    @Secured(roles = RoleEnum.ADMIN)
     @PostMapping("/v1/register")
     public void register(@RequestBody RegisterRequest request) {
         LOGGER.info("[AUTHENTICATION][{}][REGISTER][STARTING...][REQUEST][{}]", request.getUsername(), request);
         registerBusiness.register(request);
     }
 
+    /**
+     * API đăng nhập
+     */
     @PostMapping("/v1/login")
     public ResponseEntity<AccessTokenResponse> login(@RequestBody LoginRequest request) {
         LOGGER.info("[AUTHENTICATION][{}][LOGIN][STARTING...][REQUEST][{}]", request.getUsername(), request);
         return ResponseEntity.ok(loginBusiness.login(request));
     }
 
+    /**
+     * API đăng xuất
+     */
     @PostMapping("/v1/logout")
     public void logout(@RequestBody LogoutRequest request) {
         LOGGER.info("[AUTHENTICATION][{}][LOGOUT][STARTING...][REQUEST][{}]", request.getUsername(), request);

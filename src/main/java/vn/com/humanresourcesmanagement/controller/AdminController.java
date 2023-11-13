@@ -22,6 +22,9 @@ public class AdminController {
     private final UserProfilesBusiness userProfilesBusiness;
     private final UserProfileBusiness userProfileBusiness;
 
+    /**
+     * API lấy ra danh sách tất cả thông tin của user hiện có
+     */
     @Secured(roles = RoleEnum.ADMIN)
     @GetMapping("/users")
     public ResponseEntity<UserProfilesResponse> userProfiles(@RequestParam("page") int page,
@@ -29,6 +32,9 @@ public class AdminController {
         return ResponseEntity.ok(userProfilesBusiness.process(page, size));
     }
 
+    /**
+     * API lấy ra thông tin của 1 user theo id của keycloak
+     */
     @Secured(roles = RoleEnum.ADMIN)
     @GetMapping("/user/{keycloakId}")
     public ResponseEntity<UserProfileResponse> userProfile(@PathVariable("keycloakId") String keycloakId) {
