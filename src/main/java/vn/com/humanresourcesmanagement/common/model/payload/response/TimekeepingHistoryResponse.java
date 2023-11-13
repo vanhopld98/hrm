@@ -15,4 +15,5 @@ public class TimekeepingHistoryResponse {
     private Boolean isCheckout;
     private Integer workingTime;
     private String workingDay;
+    private String username;
 }

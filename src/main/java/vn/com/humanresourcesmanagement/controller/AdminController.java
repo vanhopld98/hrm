@@ -9,8 +9,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import vn.com.humanresourcesmanagement.aop.Secured;
 import vn.com.humanresourcesmanagement.business.admin.UserProfilesBusiness;
+import vn.com.humanresourcesmanagement.business.user.TimekeepingHistoriesBusiness;
 import vn.com.humanresourcesmanagement.business.user.UserProfileBusiness;
 import vn.com.humanresourcesmanagement.common.enums.RoleEnum;
+import vn.com.humanresourcesmanagement.common.model.payload.response.TimekeepingHistoriesResponse;
 import vn.com.humanresourcesmanagement.common.model.payload.response.UserProfileResponse;
 import vn.com.humanresourcesmanagement.common.model.payload.response.UserProfilesResponse;
 
@@ -21,6 +23,7 @@ public class AdminController {
 
     private final UserProfilesBusiness userProfilesBusiness;
     private final UserProfileBusiness userProfileBusiness;
+    private final TimekeepingHistoriesBusiness timekeepingHistoriesBusiness;
 
     /**
      * API lấy ra danh sách tất cả thông tin của user hiện có
@@ -39,6 +42,13 @@ public class AdminController {
     @GetMapping("/user/{keycloakId}")
     public ResponseEntity<UserProfileResponse> userProfile(@PathVariable("keycloakId") String keycloakId) {
         return ResponseEntity.ok(userProfileBusiness.execute(keycloakId));
+    }
+
+    @Secured(roles = RoleEnum.ADMIN)
+    @GetMapping("/timekeeping/histories")
+    public ResponseEntity<TimekeepingHistoriesResponse> histories(@RequestParam("page") int page,
+                                                                  @RequestParam("size") int size) {
+        return ResponseEntity.ok(timekeepingHistoriesBusiness.getAll(page, size));
     }
 
 }

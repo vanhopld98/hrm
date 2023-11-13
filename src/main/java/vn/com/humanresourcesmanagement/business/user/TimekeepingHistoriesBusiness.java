@@ -10,7 +10,6 @@ import vn.com.humanresourcesmanagement.data.entity.Timekeeping;
 import vn.com.humanresourcesmanagement.data.repository.TimekeepingRepository;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,6 +32,46 @@ public class TimekeepingHistoriesBusiness {
             timekeepingHistoryResponse.setCheckinTime(DateUtils.convertLocalDateTimeToString(timekeepingHistory.getCheckinTime(), DateUtils.HH_MM_SS));
             timekeepingHistoryResponse.setWorkingTime(timekeepingHistory.getWorkTime().intValue());
             timekeepingHistoryResponse.setWorkingDay(DateUtils.convertLocalDateToString(timekeepingHistory.getWorkDate(), DateUtils.DD_MM_YYYY));
+            switch (timekeepingHistory.getStatus()) {
+                case "CHECKIN":
+                    timekeepingHistoryResponse.setIsCheckin(true);
+                    timekeepingHistoryResponse.setIsCheckout(false);
+                    break;
+                case "CHECKOUT":
+                    timekeepingHistoryResponse.setIsCheckin(true);
+                    timekeepingHistoryResponse.setIsCheckout(true);
+                    break;
+                default:
+                    timekeepingHistoryResponse.setIsCheckin(false);
+                    timekeepingHistoryResponse.setIsCheckout(false);
+            }
+            timekeepingHistoriesResponse.add(timekeepingHistoryResponse);
+        }
+
+        int totalPage = (int) Math.ceil((double) timekeepingHistoriesResponse.size() / size);
+        if (totalPage == 0) {
+            totalPage = 1;
+        }
+
+        responses.setTimekeepingHistories(timekeepingHistoriesResponse);
+        responses.setTotalRecord(timekeepingHistoriesResponse.size());
+        responses.setTotalPage(totalPage);
+        return responses;
+    }
+
+    public TimekeepingHistoriesResponse getAll(int page, int size) {
+        TimekeepingHistoriesResponse responses = new TimekeepingHistoriesResponse();
+        List<TimekeepingHistoryResponse> timekeepingHistoriesResponse = new ArrayList<>();
+        List<Timekeeping> timekeepingHistories = timekeepingRepository.findAllOrderWorkDate();
+        timekeepingHistories = timekeepingHistories.stream().skip((long) page * size).limit(size).collect(Collectors.toList());
+
+        for (Timekeeping timekeepingHistory : timekeepingHistories) {
+            TimekeepingHistoryResponse timekeepingHistoryResponse = new TimekeepingHistoryResponse();
+            timekeepingHistoryResponse.setCheckoutTime(DateUtils.convertLocalDateTimeToString(timekeepingHistory.getCheckoutTime(), DateUtils.HH_MM_SS));
+            timekeepingHistoryResponse.setCheckinTime(DateUtils.convertLocalDateTimeToString(timekeepingHistory.getCheckinTime(), DateUtils.HH_MM_SS));
+            timekeepingHistoryResponse.setWorkingDay(DateUtils.convertLocalDateToString(timekeepingHistory.getWorkDate(), DateUtils.DD_MM_YYYY));
+            timekeepingHistoryResponse.setUsername(timekeepingHistory.getUsername());
+            timekeepingHistoryResponse.setWorkingTime(timekeepingHistory.getWorkTime().intValue());
             switch (timekeepingHistory.getStatus()) {
                 case "CHECKIN":
                     timekeepingHistoryResponse.setIsCheckin(true);

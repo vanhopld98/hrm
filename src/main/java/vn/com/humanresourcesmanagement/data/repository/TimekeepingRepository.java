@@ -23,4 +23,6 @@ public interface TimekeepingRepository extends JpaRepository<Timekeeping, String
     @Query(value = "SELECT * FROM timekeeping where username = :username order by work_date desc", nativeQuery = true)
     List<Timekeeping> findAllOrderCurrentDate(@Param("username") String username);
 
+    @Query(value = "SELECT * FROM timekeeping order by work_date desc", nativeQuery = true)
+    List<Timekeeping> findAllOrderWorkDate();
 }
