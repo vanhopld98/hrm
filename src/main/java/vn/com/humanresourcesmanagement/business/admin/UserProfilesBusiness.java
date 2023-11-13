@@ -48,12 +48,6 @@ public class UserProfilesBusiness {
         }
         LOGGER.info("[ADMIN][USERS][{}] Get list user profile success", username);
 
-        try {
-            Thread.sleep(500);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        }
-
         return UserProfilesResponse
                 .builder()
                 .totalPage(totalPage)

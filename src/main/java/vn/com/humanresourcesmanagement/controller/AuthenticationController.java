@@ -1,15 +1,9 @@
 package vn.com.humanresourcesmanagement.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.keycloak.adapters.springboot.KeycloakSpringBootProperties;
-import org.keycloak.admin.client.Keycloak;
-import org.keycloak.representations.idm.ClientRepresentation;
-import org.keycloak.representations.idm.RoleRepresentation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,9 +15,6 @@ import vn.com.humanresourcesmanagement.common.model.payload.request.LoginRequest
 import vn.com.humanresourcesmanagement.common.model.payload.request.LogoutRequest;
 import vn.com.humanresourcesmanagement.common.model.payload.request.RegisterRequest;
 import vn.com.humanresourcesmanagement.common.model.payload.response.AccessTokenResponse;
-import vn.com.humanresourcesmanagement.configuration.properties.KeycloakProperties;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/authentication")
@@ -35,13 +26,11 @@ public class AuthenticationController {
     private final LoginBusiness loginBusiness;
     private final RegisterBusiness registerBusiness;
     private final LogoutBusiness logoutBusiness;
-    private final KeycloakProperties keycloakProperties;
-    private final KeycloakSpringBootProperties keycloakSpringBootProperties;
 
     @PostMapping("/v1/register")
-    public ResponseEntity<AccessTokenResponse> register(@RequestBody RegisterRequest request) {
+    public void register(@RequestBody RegisterRequest request) {
         LOGGER.info("[AUTHENTICATION][{}][REGISTER][STARTING...][REQUEST][{}]", request.getUsername(), request);
-        return ResponseEntity.ok(registerBusiness.register(request));
+        registerBusiness.register(request);
     }
 
     @PostMapping("/v1/login")

@@ -10,9 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import vn.com.humanresourcesmanagement.common.constants.Constant;
 import vn.com.humanresourcesmanagement.common.exception.BusinessException;
-import vn.com.humanresourcesmanagement.common.model.payload.request.LoginRequest;
 import vn.com.humanresourcesmanagement.common.model.payload.request.RegisterRequest;
-import vn.com.humanresourcesmanagement.common.model.payload.response.AccessTokenResponse;
 import vn.com.humanresourcesmanagement.common.utils.PasswordUtils;
 import vn.com.humanresourcesmanagement.configuration.properties.KeycloakProperties;
 import vn.com.humanresourcesmanagement.data.entity.UserProfile;
@@ -37,7 +35,7 @@ public class RegisterBusiness {
     private final UserProfileRepository userProfileRepository;
     private final LoginBusiness loginBusiness;
 
-    public AccessTokenResponse register(RegisterRequest request) {
+    public void register(RegisterRequest request) {
 
         var username = request.getUsername();
 
@@ -104,15 +102,10 @@ public class RegisterBusiness {
             } else if (userCreateResponse.getStatus() == 409) {
                 LOGGER.info("[AUTHENTICATION][{}][REGISTER][USERNAME_EXISTS_IN_KEYCLOAK]", username);
                 throw new BusinessException(Constant.USERNAME_EXISTS);
+            } else {
+                throw new BusinessException("Có lỗi xảy ra trong quá trình tạo mới người dùng. Vui lòng thử lại sau");
             }
         }
-
-        /* Thực hiện login để trả ra token mới nhất của user */
-        return loginBusiness.login(LoginRequest
-                .builder()
-                .username(request.getUsername())
-                .password(request.getPassword())
-                .build());
     }
 
 }

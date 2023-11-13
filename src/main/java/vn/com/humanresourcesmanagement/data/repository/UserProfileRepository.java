@@ -11,4 +11,6 @@ public interface UserProfileRepository extends JpaRepository<UserProfile, String
 
     Optional<UserProfile> findByUsername(String username);
 
+    Optional<UserProfile> findByKeycloakId(String keycloakId);
+
 }
